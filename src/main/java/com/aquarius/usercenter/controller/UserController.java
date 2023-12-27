@@ -86,7 +86,7 @@ public class UserController {
         // 仅管理员权限
         Object userObj = request.getAttribute(UserConstant.USER_LOGIN_STATE);
         User user = (User) userObj;
-        return user != null && user.getRole() == UserConstant.ADMIN_ROLE;
+        return user != null && user.getUserRole() == UserConstant.ADMIN_ROLE;
     }
 
 
