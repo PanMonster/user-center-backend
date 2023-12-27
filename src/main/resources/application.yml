@@ -7,6 +7,9 @@ spring:
     url: jdbc:mysql://localhost:3306/common_user_center?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: 123456
+  # session 失效时间
+  session:
+    timeout: 86400
 server:
   port: 8080
 mybatis-plus:
