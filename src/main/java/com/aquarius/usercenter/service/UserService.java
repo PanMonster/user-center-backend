@@ -11,6 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 */
 public interface UserService extends IService<User> {
 
+
+    /**
+     * 用户登录态键
+     */
+    String USER_LOGIN_STATE = "userLoginState";
+
+
     /**
      *  用户注册
      * @param userAccount 用户账号

@@ -53,7 +53,13 @@ public class UserController {
     }
 
     @GetMapping("/searcch")
-    public List<User> searchUsers(String username) {
+    public List<User> searchUsers(String username, HttpServletRequest request) {
+        // 仅管理员可查询
+        Object userObj = request.getAttribute(UserService.USER_LOGIN_STATE);
+        User user = (User) userObj;
+        if (user == null || user.getRole() != 1) {
+            return new ArrayList<>();
+        }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(username)) {
             queryWrapper.like("username", username);

@@ -32,12 +32,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 盐（用于混交加密）
      */
     public static final String SALT = "goblin";
-
-    /**
-     * 用户登录态键
-     */
-    public static final String USER_LOGIN_STATE = "userLoginState";
-
     @Override
     public Long userRegister(String userAccount, String userPassword, String checkPassword) {
         //1. 校验
