@@ -1,5 +1,6 @@
 package com.aquarius.usercenter.controller;
 
+import com.aquarius.usercenter.constant.UserConstant;
 import com.aquarius.usercenter.model.domain.User;
 import com.aquarius.usercenter.model.request.UserLoginRequest;
 import com.aquarius.usercenter.model.request.UserRegisterRequest;
@@ -54,10 +55,7 @@ public class UserController {
 
     @GetMapping("/searcch")
     public List<User> searchUsers(String username, HttpServletRequest request) {
-        // 仅管理员可查询
-        Object userObj = request.getAttribute(UserService.USER_LOGIN_STATE);
-        User user = (User) userObj;
-        if (user == null || user.getRole() != 1) {
+        if(!isAdmin(request)) {
             return new ArrayList<>();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -68,11 +66,27 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public boolean deleteUser(@RequestBody long id) {
+    public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
+        if(!isAdmin(request)) {
+            return false;
+        }
         if (id <= 0) {
             return false;
         }
         return userService.removeById(id);
+    }
+
+    /**
+     * 是否为管理员
+     *
+     * @param request
+     * @return
+     */
+    private boolean isAdmin(HttpServletRequest request) {
+        // 仅管理员权限
+        Object userObj = request.getAttribute(UserConstant.USER_LOGIN_STATE);
+        User user = (User) userObj;
+        return user != null && user.getRole() == UserConstant.ADMIN_ROLE;
     }
 
 

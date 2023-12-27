@@ -1,5 +1,6 @@
 package com.aquarius.usercenter.service.impl;
 
+import com.aquarius.usercenter.constant.UserConstant;
 import com.aquarius.usercenter.mapper.UserMapper;
 import com.aquarius.usercenter.model.domain.User;
 import com.aquarius.usercenter.service.UserService;
@@ -117,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setUserStatus(user.getUserStatus());
         safetyUser.setCreateTime(user.getCreateTime());
         // 4. 记录用户的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
+        request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, safetyUser);
         return safetyUser;
     }
 }
