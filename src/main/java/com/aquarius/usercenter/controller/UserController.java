@@ -4,13 +4,13 @@ import com.aquarius.usercenter.model.domain.User;
 import com.aquarius.usercenter.model.request.UserLoginRequest;
 import com.aquarius.usercenter.model.request.UserRegisterRequest;
 import com.aquarius.usercenter.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 用户接口
@@ -49,6 +49,15 @@ public class UserController {
             return null;
         }
         return userService.userLogin(userAccount, userPassword, request);
+    }
+
+    @GetMapping("/searcch")
+    public List<User> searchUsers(String username) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(username)) {
+            queryWrapper.like("username", username);
+        }
+        return userService.list(queryWrapper);
     }
 
 
