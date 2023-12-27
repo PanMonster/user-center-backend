@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +59,14 @@ public class UserController {
             queryWrapper.like("username", username);
         }
         return userService.list(queryWrapper);
+    }
+
+    @PostMapping("/delete")
+    public boolean deleteUser(@RequestBody long id) {
+        if (id <= 0) {
+            return false;
+        }
+        return userService.removeById(id);
     }
 
 
