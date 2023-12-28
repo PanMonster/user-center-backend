@@ -54,9 +54,22 @@ public class UserController {
         return userService.userLogin(userAccount, userPassword, request);
     }
 
-    @GetMapping("/searcch")
+    @GetMapping("/current")
+    public User getCurrentUser(HttpServletRequest request) {
+        Object userObj = request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        if (currentUser == null) {
+            return null;
+        }
+        long userId = currentUser.getId();
+        // TODO 校验用户是否合法
+        User user = userService.getById(userId);
+        return userService.getSafetyUser(user);
+    }
+
+    @GetMapping("/search")
     public List<User> searchUsers(String username, HttpServletRequest request) {
-        if(!isAdmin(request)) {
+        if (!isAdmin(request)) {
             return new ArrayList<>();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -69,7 +82,7 @@ public class UserController {
 
     @PostMapping("/delete")
     public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
-        if(!isAdmin(request)) {
+        if (!isAdmin(request)) {
             return false;
         }
         if (id <= 0) {
