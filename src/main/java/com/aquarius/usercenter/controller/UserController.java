@@ -1,6 +1,7 @@
 package com.aquarius.usercenter.controller;
 
 import com.aquarius.usercenter.common.BaseResponse;
+import com.aquarius.usercenter.common.ErrorCode;
 import com.aquarius.usercenter.common.ResultUtils;
 import com.aquarius.usercenter.constant.UserConstant;
 import com.aquarius.usercenter.model.domain.User;
@@ -31,7 +32,7 @@ public class UserController {
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
