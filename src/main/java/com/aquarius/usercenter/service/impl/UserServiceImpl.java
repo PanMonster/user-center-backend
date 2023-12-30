@@ -1,6 +1,8 @@
 package com.aquarius.usercenter.service.impl;
 
+import com.aquarius.usercenter.common.ErrorCode;
 import com.aquarius.usercenter.constant.UserConstant;
+import com.aquarius.usercenter.exception.BusinessException;
 import com.aquarius.usercenter.mapper.UserMapper;
 import com.aquarius.usercenter.model.domain.User;
 import com.aquarius.usercenter.service.UserService;
@@ -37,31 +39,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Long userRegister(String userAccount, String userPassword, String checkPassword) {
         //1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            // todo 修改为自定义异常
-            return -1L;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            return -1L;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账户太短");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            return -1L;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         // 账户不含特殊字符
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (matcher.find()) {
-            return -1L;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账户不能包含特殊字符");
         }
         // 密码和校验密码相同
         if (!userPassword.equals(checkPassword)) {
-            return -1L;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
         // 账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_account", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1L;
+            throw new BusinessException(ErrorCode.NULL_ERROR, "账号重复");
         }
         //2. 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
@@ -71,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserPassword(encryptPassword);
         boolean saveResult = this.save(user);
         if (!saveResult) {
-            return -1L;
+            throw new BusinessException(ErrorCode.NULL_ERROR, "注册失败");
         }
         return user.getId();
     }
